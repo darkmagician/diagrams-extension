@@ -60,7 +60,7 @@ class Diagrams {
 			],
 		] );
 
-		$outputFormats = [ 'image' => $params['format'] ?? 'png' ];
+		$outputFormats = [ 'image' => $params['format'] ?? 'svg' ];
 		if ( $commandName !== 'plantuml' ) {
 			// Add image map output where it's supported.
 			$outputFormats['map'] = $commandName === 'mscgen' ? 'ismap' : 'cmapx';
@@ -217,8 +217,17 @@ class Diagrams {
 				Html::element( 'img', $imgAttrs )
 			);
 		} else {
-			// No image map.
-			$out = Html::element( 'img', $imgAttrs );
+			
+			if (substr($imgUrl, -4) === ".svg") {
+			    $objectAttrs= [ 'data' => $imgUrl, type=>'image/svg+xml'];
+				$out = Html::rawElement(
+					'object',
+					$objectAttrs
+					);
+			} else {
+			 			// No image map.
+			   $out = Html::element( 'img', $imgAttrs );
+			}
 		}
 		return Html::rawElement( 'div', [ 'class' => 'ext-diagrams' ], $out );
 	}
